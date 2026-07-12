@@ -3,10 +3,7 @@ name = "anto-mart"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
-edition = "2021"
-
-[workspace]
-members = [".", "migration"]
+edition = "2024"
 
 [lib]
 name = "anto_mart_lib"
@@ -16,16 +13,23 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
+db = { path = "db" }
+
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
-serde = { version = "1", features = ["derive"] }
+
+serde.workspace = true
 serde_json = "1"
-escpos = "0.17"
-sea-orm = { version = "1", features = [
-  "sqlx-sqlite",
-  "runtime-tokio-rustls",
-  "macros",
-] }
+
 tokio = { version = "1", features = ["full"] }
+
+escpos = "0.17"
 dirs = "5"
+anyhow.workspace = true
+
+[workspace]
+members = [".", "db"]
+
+[workspace.dependencies]
 anyhow = "1"
+serde = { version = "1", features = ["derive"] }
