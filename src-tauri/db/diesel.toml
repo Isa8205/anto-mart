@@ -1,5 +1,5 @@
 [print_schema]
 file = "src/schema.rs"
 
-[migration_directory]
+[migrations_directory]
 dir = "migrations"

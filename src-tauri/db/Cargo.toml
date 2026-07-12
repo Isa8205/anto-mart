@@ -9,4 +9,6 @@ diesel = { version = "2.2", features = ["sqlite", "returning_clauses_for_sqlite_
 serde.workspace = true
 
 thiserror = "1"
+dotenv = "0.15.0"
+chrono = "^0"
 anyhow.workspace = true

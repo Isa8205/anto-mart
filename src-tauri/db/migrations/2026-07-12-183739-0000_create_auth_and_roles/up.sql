@@ -1,0 +1,38 @@
+CREATE TABLE permissions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  perm_name VARCHAR UNIQUE NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE roles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  role_name VARCHAR UNIQUE NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Join table for Many-to-Many relationship
+CREATE TABLE role_permissions (
+  role_id INTEGER NOT NULL,
+  permission_id INTEGER NOT NULL,
+  PRIMARY KEY(role_id, permission_id),
+  FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE,
+  FOREIGN KEY(permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+);
+
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  first_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
+  email VARCHAR NOT NULL UNIQUE,
+  phone TEXT UNIQUE, -- Kept as TEXT because integer prefixes like 07... lose leading zeros in SQLite
+  password VARCHAR NOT NULL,
+  avatar VARCHAR,
+  role INTEGER,
+  mfa_enabled BOOLEAN NOT NULL DEFAULT 0, -- SQLite handles booleans as 0 or 1
+  mfa_method VARCHAR, 
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (role) REFERENCES roles(id) ON DELETE SET NULL
+);
