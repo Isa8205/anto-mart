@@ -4,7 +4,7 @@ use diesel::SqliteConnection;
 use diesel::prelude::*;
 
 pub struct Database {
-    conn: SqliteConnection,
+    pub conn: SqliteConnection,
 }
 
 impl Database {
