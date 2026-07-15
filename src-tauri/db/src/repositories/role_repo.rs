@@ -5,14 +5,13 @@ use diesel::{
     SqliteConnection,
 };
 
-use crate::{
-    models::role::{NewRole, Role, UpdateRole}, schema::roles,
-};
+use crate::models::{Role, NewRole, UpdateRole};
+use crate::schema::roles;
 
 pub struct RoleRepository;
 
 impl RoleRepository {
-    pub fn create(data: NewRole, conn: &mut SqliteConnection) -> Result<Role, diesel::result::Error> {
+    pub fn create(&mut self, data: NewRole, conn: &mut SqliteConnection) -> Result<Role, diesel::result::Error> {
         diesel::insert_into(roles::table)
             .values(&data)
             .returning(Role::as_returning())

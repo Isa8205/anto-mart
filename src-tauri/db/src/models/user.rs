@@ -42,3 +42,32 @@ pub struct UpdateUser {
     pub mfa_enabled: Option<bool>,
     pub mfa_method: Option<Option<String>>
 }
+
+#[derive(Serialize)]
+pub struct UserResponse {
+    pub id: i32,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub phone: Option<String>,
+    pub avatar: Option<String>,
+    pub role: Option<i32>,
+    pub mfa_enabled: bool,
+    pub mfa_method: Option<String>,
+}
+
+impl From<User> for UserResponse {
+    fn from(user: User) -> Self {
+        Self {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            phone: user.phone,
+            avatar: user.avatar,
+            role: user.role,
+            mfa_enabled: user.mfa_enabled,
+            mfa_method: user.mfa_method,
+        }
+    }
+}

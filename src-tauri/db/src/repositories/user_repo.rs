@@ -1,7 +1,7 @@
-use diesel::{QueryDsl, RunQueryDsl, SelectableHelper, SqliteConnection};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, SqliteConnection};
 
-use crate::models::user::{NewUser, UpdateUser, User};
-use crate::schema::users;
+use crate::models::{NewUser, UpdateUser, User};
+use crate::schema::users::{self, email};
 
 pub struct UserRepository;
 
@@ -23,6 +23,13 @@ impl UserRepository {
     pub fn find_by_id(&mut self, id: i32, conn: &mut SqliteConnection) -> Result<User, diesel::result::Error> {
         users::table
             .find(id)
+            .select(User::as_select())
+            .first::<User>(conn)
+    }
+
+    pub fn find_by_email(&mut self, given_email: String, conn: &mut SqliteConnection) -> Result<User, diesel::result::Error> {
+        users::table
+            .filter(email.eq(given_email))
             .select(User::as_select())
             .first::<User>(conn)
     }
