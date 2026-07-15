@@ -1,7 +1,8 @@
 use crate::schema::users;
 use diesel::{Insertable, Selectable, deserialize::Queryable, query_builder::AsChangeset};
+use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable, Debug)]
+#[derive(Queryable, Selectable, Serialize, Debug)]
 #[diesel(table_name = users)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct User {
@@ -17,7 +18,7 @@ pub struct User {
     pub mfa_method: Option<String>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = users)]
 pub struct NewUser {
     pub first_name: String,

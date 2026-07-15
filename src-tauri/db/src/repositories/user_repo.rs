@@ -20,6 +20,13 @@ impl UserRepository {
             .load::<User>(conn)
     }
 
+    pub fn find_by_id(&mut self, id: i32, conn: &mut SqliteConnection) -> Result<User, diesel::result::Error> {
+        users::table
+            .find(id)
+            .select(User::as_select())
+            .first::<User>(conn)
+    }
+
     pub fn update(&mut self, user_id: i32, changes: UpdateUser, conn: &mut SqliteConnection) -> Result<User, diesel::result::Error> {
         diesel::update(users::table.find(user_id))
             .set(&changes)
