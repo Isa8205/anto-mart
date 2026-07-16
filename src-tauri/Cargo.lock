@@ -47,6 +47,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "argon2",
+ "chrono",
  "db",
  "dirs 5.0.1",
  "escpos",

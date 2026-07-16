@@ -1,4 +1,5 @@
 use diesel::{Selectable, deserialize::Queryable, prelude::Insertable, query_builder::AsChangeset, sql_types::Timestamp};
+use serde::Deserialize;
 
 use crate::schema::roles;
 
@@ -10,7 +11,7 @@ pub struct Role {
     pub role_name: String,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = roles)]
 pub struct NewRole {
     pub role_name: String

@@ -1,8 +1,30 @@
-use crate::DbState;
+use crate::{DbState, utils::media::save_file};
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
-use db::{models::{NewRole, NewUser, User, UserResponse}, repositories::{RoleRepository, UserRepository}};
+use db::{models::{NewRole, NewUser, UserResponse}, repositories::{RoleRepository, UserRepository}};
 use rand_core::OsRng;
 use serde::Serialize;
+use tauri::Manager;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct CreateUserRequest {
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub phone: Option<String>,
+    pub password: String, // Plain text from frontend, to be hashed!
+    pub mfa_enabled: bool,
+    pub mfa_method: Option<String>,
+    pub role: Option<i32>,
+    
+    pub avatar: Option<AvatarPayload>,
+}
+
+#[derive(Deserialize)]
+pub struct AvatarPayload {
+    pub name: String,
+    pub bytes: Vec<u8>,
+}
 
 #[derive(Serialize)]
 pub struct Response {
@@ -12,21 +34,47 @@ pub struct Response {
 }
 
 #[tauri::command]
-pub fn add_user(mut data: NewUser, state: tauri::State<'_, DbState>) -> Response {
-    let mut db_guard = state.0.lock().unwrap();
+pub fn add_user(data: CreateUserRequest, app: tauri::AppHandle) -> Response {
+    let db_state = app.state::<DbState>();
+    let mut db_guard = db_state.0.lock().unwrap();
     let conn = &mut db_guard.conn;
 
+    // Password hashing
     let salt = SaltString::generate(&mut OsRng);
     let password_hash = Argon2::default()
         .hash_password(&data.password.as_bytes(), &salt)
         .unwrap()
         .to_string();
 
-    data.password = password_hash;
+    // Save avatar and get relative path
+    let avatar_path = match data.avatar {
+        Some(avatar_data) => {
+            if let Ok(save_path) = save_file(&app, "avatars", &avatar_data.name, &avatar_data.bytes) {
+                Some(save_path)
+            } else {
+                // TODO: Find a way to log the errors related to file saving
+                None
+            }
+        },
+        None => None
+    };
+
+    // Construct a NewUser instance for storing
+    let new_user = NewUser {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+        password: password_hash,
+        avatar: avatar_path,
+        role: data.role,
+        mfa_enabled: data.mfa_enabled,
+        mfa_method: data.mfa_method
+    };
 
     let mut user_repo = UserRepository;
 
-    match user_repo.create(data, conn) {
+    match user_repo.create(new_user, conn) {
         Ok(user) => {
             dbg!(user);
             Response {

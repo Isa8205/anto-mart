@@ -3,9 +3,10 @@ use tauri::{self, Manager};
 use db::{
     database::Database,
 };
-use commands::auth::login;
 
-mod util;
+use crate::commands::auth::{login,add_role, add_user};
+
+mod utils;
 mod commands;
 
 pub struct DbState(Mutex<Database>);
@@ -26,7 +27,7 @@ pub async fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![login])
+        .invoke_handler(tauri::generate_handler![login, add_role, add_user])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -10,5 +10,5 @@ serde.workspace = true
 
 thiserror = "1"
 dotenv = "0.15.0"
-chrono = "^0"
+chrono.workspace = true
 anyhow.workspace = true
