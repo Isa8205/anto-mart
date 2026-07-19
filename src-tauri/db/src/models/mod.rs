@@ -1,5 +1,14 @@
-mod user;
+mod inventory;
 mod role;
+mod user;
 
-pub use user::{User, NewUser, UpdateUser, UserResponse};
-pub use role::{Role, NewRole, UpdateRole};
+pub use inventory::{
+    NewProduct,
+    NewProductCategory,
+    Product,
+    ProductCategory,
+    UpdateProduct,
+    UpdateProductCategory,
+};
+pub use role::{ NewRole, Role, UpdateRole };
+pub use user::{NewUser, UpdateUser, User, UserResponse};

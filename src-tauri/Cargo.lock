@@ -49,6 +49,7 @@ dependencies = [
  "argon2",
  "chrono",
  "db",
+ "derive_more",
  "dirs 5.0.1",
  "escpos",
  "rand_core",
@@ -739,6 +740,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
+ "derive_more",
  "diesel",
  "dotenv",
  "serde",
@@ -793,6 +795,7 @@ version = "2.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e54d1f576cd3a3460f212a4615fd12ce1b6303c095b79a44449ffbe627753dc1"
 dependencies = [
+ "chrono",
  "diesel_derives",
  "downcast-rs",
  "libsqlite3-sys",

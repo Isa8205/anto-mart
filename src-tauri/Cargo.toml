@@ -27,6 +27,7 @@ escpos = "0.17"
 dirs = "5"
 chrono.workspace = true
 anyhow.workspace = true
+derive_more.workspace = true
 
 argon2 = "0.5"
 rand_core = { version = "0.6", features = ["getrandom"] }
@@ -38,3 +39,4 @@ members = [".", "db"]
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
 chrono = "^0"
+derive_more = { version = "2", features = ["from"]}

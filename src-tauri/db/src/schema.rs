@@ -10,6 +10,50 @@ diesel::table! {
 }
 
 diesel::table! {
+    product_categories (id) {
+        id -> Integer,
+        parent_id -> Nullable<Integer>,
+        name -> Text,
+        slug -> Text,
+        description -> Nullable<Text>,
+        image -> Nullable<Text>,
+        is_active -> Bool,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    product_images (id) {
+        id -> Integer,
+        alt_text -> Nullable<Text>,
+        is_primary -> Bool,
+        image -> Nullable<Text>,
+        product_id -> Nullable<Integer>,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    products (id) {
+        id -> Integer,
+        sku -> Text,
+        item_name -> Text,
+        category_id -> Nullable<Integer>,
+        cost_price -> Double,
+        selling_price -> Double,
+        tax_rate_id -> Nullable<Integer>,
+        quantity_on_hand -> Integer,
+        low_stock_threshold -> Nullable<Integer>,
+        is_perishable -> Bool,
+        expiration_date -> Nullable<Timestamp>,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     role_permissions (role_id, permission_id) {
         role_id -> Integer,
         permission_id -> Integer,
@@ -42,8 +86,18 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(product_images -> products (product_id));
+diesel::joinable!(products -> product_categories (category_id));
 diesel::joinable!(role_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> roles (role_id));
 diesel::joinable!(users -> roles (role));
 
-diesel::allow_tables_to_appear_in_same_query!(permissions, role_permissions, roles, users,);
+diesel::allow_tables_to_appear_in_same_query!(
+    permissions,
+    product_categories,
+    product_images,
+    products,
+    role_permissions,
+    roles,
+    users,
+);
