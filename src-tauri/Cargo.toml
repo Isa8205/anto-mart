@@ -31,6 +31,7 @@ derive_more.workspace = true
 
 argon2 = "0.5"
 rand_core = { version = "0.6", features = ["getrandom"] }
+ts-rs = "12.0.1"
 
 [workspace]
 members = [".", "db"]
@@ -39,4 +40,4 @@ members = [".", "db"]
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
 chrono = "^0"
-derive_more = { version = "2", features = ["from"]}
+derive_more = { version = "2", features = ["from"] }

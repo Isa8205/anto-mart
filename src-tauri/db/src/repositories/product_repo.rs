@@ -1,11 +1,13 @@
-use diesel::{QueryDsl, RunQueryDsl, SelectableHelper, SqliteConnection};
+use diesel::prelude::*;
 
-use crate::{models::{NewProduct, Product, UpdateProduct}, schema::products};
+use crate::models::Product;
+use crate::entities::{NewProduct, UpdateProduct};
+use crate::schema::products;
 
 pub struct ProductRepository;
 
 impl ProductRepository {
-    fn create(&mut self, data: NewProduct, conn: &mut SqliteConnection) -> Result<Product, diesel::result::Error> {
+    pub fn create(&mut self, data: NewProduct, conn: &mut SqliteConnection) -> Result<Product, diesel::result::Error> {
         diesel::insert_into(products::table)
             .values(data)
             .returning(Product::as_returning())

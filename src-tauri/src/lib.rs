@@ -4,10 +4,14 @@ use db::{
     database::Database,
 };
 
-use crate::commands::auth::{login,add_role, add_user};
+use crate::commands::{
+    auth::{add_role, add_user, login},
+    inventory::{add_product_category},
+};
 
 mod utils;
 mod commands;
+mod dto;
 
 pub struct DbState(Mutex<Database>);
 
@@ -27,7 +31,12 @@ pub async fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![login, add_role, add_user])
+        .invoke_handler(tauri::generate_handler![
+            login,
+            add_role,
+            add_user,
+            add_product_category,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

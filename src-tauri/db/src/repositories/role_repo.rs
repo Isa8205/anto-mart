@@ -1,11 +1,7 @@
-use diesel::{
-    QueryDsl,
-    RunQueryDsl,
-    SelectableHelper,
-    SqliteConnection,
-};
+use diesel::prelude::*;
 
-use crate::models::{Role, NewRole, UpdateRole};
+use crate::models::Role;
+use crate::entities::{NewRole, UpdateRole};
 use crate::schema::roles;
 
 pub struct RoleRepository;
