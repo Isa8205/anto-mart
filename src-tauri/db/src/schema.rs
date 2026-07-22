@@ -54,6 +54,31 @@ diesel::table! {
 }
 
 diesel::table! {
+    purchase_items (id) {
+        id -> Integer,
+        purchase_id -> Integer,
+        product_id -> Integer,
+        unit_price -> Double,
+        quantity -> Integer,
+        subtotal -> Double,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    purchases (id) {
+        id -> Integer,
+        user_id -> Nullable<Integer>,
+        purchase_number -> Text,
+        total_amount -> Double,
+        payment_method -> Text,
+        status -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     role_permissions (role_id, permission_id) {
         role_id -> Integer,
         permission_id -> Integer,
@@ -88,6 +113,8 @@ diesel::table! {
 
 diesel::joinable!(product_images -> products (product_id));
 diesel::joinable!(products -> product_categories (category_id));
+diesel::joinable!(purchase_items -> products (product_id));
+diesel::joinable!(purchases -> users (user_id));
 diesel::joinable!(role_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> roles (role_id));
 diesel::joinable!(users -> roles (role));
@@ -97,6 +124,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     product_categories,
     product_images,
     products,
+    purchase_items,
+    purchases,
     role_permissions,
     roles,
     users,

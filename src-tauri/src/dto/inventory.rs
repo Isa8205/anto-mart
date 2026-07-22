@@ -20,3 +20,26 @@ pub struct ProductCategoryResponse {
     pub image: Vec<u8>,
     pub is_active: bool,
 }
+
+#[derive(Deserialize, TS)]
+#[ts(export)]
+pub struct CreateProductRequest {
+    pub sku: String,
+    pub item_name: String,
+    pub category_id: i32,
+    pub cost_price: f64,
+    pub selling_price: f64,
+    pub quantity_on_hand: i32,
+    pub low_stock_threshold: Option<i32>,
+}
+
+#[derive(Serialize, TS)]
+#[ts(export)]
+pub struct ProductResponse {
+    pub id: i32,
+    pub item_name: String,
+    pub cost_price: f64,
+    pub selling_price: f64,
+    pub stock: i32,
+    pub low_stock_threshold: Option<i32>,
+}

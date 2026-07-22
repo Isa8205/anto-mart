@@ -1,7 +1,9 @@
 mod inventory;
 mod role;
 mod user;
+mod sales;
 
+pub use sales::{Purchase, PurchaseItem};
 pub use inventory::{
     Product,
     ProductCategory,
