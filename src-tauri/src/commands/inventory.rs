@@ -5,13 +5,11 @@ use db::{
 use tauri::Manager;
 
 use crate::{
-    DbState,
-    dto::CreateProductCategoryRequest,
-    utils::media::save_file,
+    DbState, dto::{CreateProductCategoryRequest, Response}, utils::media::save_file,
 };
 
 #[tauri::command]
-pub fn add_product_category(data: CreateProductCategoryRequest, app: tauri::AppHandle) {
+pub fn add_product_category(data: CreateProductCategoryRequest, app: tauri::AppHandle) -> Response {
     let db_state = app.state::<DbState>();
     let mut db_guard = db_state.0.lock().unwrap();
 
@@ -39,5 +37,18 @@ pub fn add_product_category(data: CreateProductCategoryRequest, app: tauri::AppH
         is_active: data.is_active,
     };
 
-    product_category_repo.create(new_product_category, conn);
+    match product_category_repo.create(new_product_category, conn) {
+        Ok(_) => {
+            Response {
+                success: true,
+                error: None,
+            }
+        },
+        Err(e) => {
+            Response {
+                success: false,
+                error: Some(e.to_string()),
+            }
+        }
+    }
 }

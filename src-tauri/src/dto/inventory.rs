@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, TS)]
+#[ts(export)]
 pub struct CreateProductCategoryRequest {
     pub parent_id: Option<i32>,
     pub name: String,
@@ -9,7 +11,8 @@ pub struct CreateProductCategoryRequest {
     pub is_active: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct ProductCategoryResponse {
     pub id: i32,
     pub name: String,

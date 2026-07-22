@@ -1,10 +1,7 @@
 use crate::{
-    DbState,
-    dto::{
-        CreateUserRequest,
-        UserResponse,
-    },
-    utils::media::save_file,
+    DbState, dto::{
+        CreateUserRequest, LoginResponse, Response, UserResponse,
+    }, utils::media::save_file,
 };
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
 use db::{
@@ -12,16 +9,7 @@ use db::{
     repositories::{RoleRepository, UserRepository},
 };
 use rand_core::OsRng;
-use serde::Serialize;
 use tauri::Manager;
-
-
-#[derive(Serialize)]
-pub struct Response {
-    success: bool,
-    error: Option<String>,
-    user: Option<UserResponse>,
-}
 
 #[tauri::command]
 pub fn add_user(data: CreateUserRequest, app: tauri::AppHandle) -> Response {
@@ -71,7 +59,6 @@ pub fn add_user(data: CreateUserRequest, app: tauri::AppHandle) -> Response {
             Response {
                 success: true,
                 error: None,
-                user: None,
             }
         }
         Err(e) => {
@@ -79,7 +66,6 @@ pub fn add_user(data: CreateUserRequest, app: tauri::AppHandle) -> Response {
             Response {
                 success: false,
                 error: Some(e.to_string()),
-                user: None,
             }
         }
     }
@@ -98,19 +84,17 @@ pub fn add_role(data: NewRole, state: tauri::State<'_, DbState>) -> Response {
             Response {
                 success: true,
                 error: None,
-                user: None,
             }
         }
         Err(e) => Response {
             success: false,
             error: Some(e.to_string()),
-            user: None,
         },
     }
 }
 
 #[tauri::command]
-pub fn login(email: String, password: String, state: tauri::State<'_, DbState>) -> Response {
+pub fn login(email: String, password: String, state: tauri::State<'_, DbState>) -> LoginResponse {
     let mut db_guard = state.0.lock().unwrap();
     let conn = &mut db_guard.conn;
 
@@ -123,22 +107,19 @@ pub fn login(email: String, password: String, state: tauri::State<'_, DbState>) 
                 .verify_password(password.as_bytes(), &password_hash)
                 .is_ok()
             {
-                Response {
-                    success: false,
-                    error: Some("Invalid email or password".to_string()),
+                LoginResponse {
+                    status: "INVALID_CREDENTIALS".into(),
                     user: None,
                 }
             } else {
-                Response {
-                    success: true,
-                    error: None,
+                LoginResponse {
+                    status: "LOGIN_SUCCESS".into(),
                     user: Some(UserResponse::from(user)),
                 }
             }
         }
-        Err(e) => Response {
-            success: false,
-            error: Some(e.to_string()),
+        Err(_e) => LoginResponse {
+            status: "APP_ERROR".into(),
             user: None,
         },
     }

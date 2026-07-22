@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use db::models::User;
+use ts_rs::TS;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, TS)]
+#[ts(export)]
 pub struct CreateUserRequest {
     pub first_name: String,
     pub last_name: String,
@@ -15,13 +17,14 @@ pub struct CreateUserRequest {
     pub avatar: Option<AvatarPayload>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, TS)]
 pub struct AvatarPayload {
     pub name: String,
     pub bytes: Vec<u8>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export)]
 pub struct UserResponse {
     pub id: i32,
     pub first_name: String,
