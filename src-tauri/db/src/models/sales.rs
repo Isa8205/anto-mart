@@ -1,5 +1,7 @@
 use chrono::NaiveDateTime;
-use diesel::prelude::*;
+use diesel::{prelude::{Queryable, Selectable}};
+
+use crate::types::PaymentMethod;
 
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::purchases)]
@@ -9,7 +11,7 @@ pub struct Purchase {
     pub user_id: Option<i32>,
     pub purchase_number: String,
     pub total_amount: f64,
-    pub payment_method: String,
+    pub payment_method: PaymentMethod,
     pub status: String,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
