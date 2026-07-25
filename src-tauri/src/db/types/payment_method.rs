@@ -35,3 +35,12 @@ impl FromSql<Text, diesel::sqlite::Sqlite> for PaymentMethod {
         }
     }
 }
+
+impl From<PaymentMethod> for String {
+    fn from(value: PaymentMethod) -> Self {
+        match value {
+            PaymentMethod::Cash => String::from("CASH"),
+            PaymentMethod::Mpesa => String::from("MPESA"),
+        }
+    }
+}
