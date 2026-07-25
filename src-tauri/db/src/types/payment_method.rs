@@ -1,6 +1,8 @@
 use diesel::{backend::Backend, deserialize::{FromSql, FromSqlRow}, serialize::ToSql, sql_types::Text, sqlite::Sqlite};
+use serde::Deserialize;
+use ts_rs::TS;
 
-#[derive(FromSqlRow, Debug)]
+#[derive(Deserialize, FromSqlRow, TS, Debug)]
 pub enum PaymentMethod {
     Cash,
     Mpesa,

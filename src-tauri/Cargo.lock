@@ -746,6 +746,7 @@ dependencies = [
  "dotenv",
  "serde",
  "thiserror 1.0.69",
+ "ts-rs",
 ]
 
 [[package]]

@@ -13,3 +13,5 @@ dotenv = "0.15.0"
 chrono.workspace = true
 anyhow.workspace = true
 derive_more.workspace = true
+ts-rs.workspace = true
+
