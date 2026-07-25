@@ -1,9 +1,11 @@
-use diesel::{prelude::*, query_builder::AsChangeset};
+use diesel::prelude::*;
 use serde::Deserialize;
+
+use crate::db::schema;
 
 
 #[derive(Insertable, Deserialize)]
-#[diesel(table_name = crate::schema::users)]
+#[diesel(table_name = schema::users)]
 pub struct NewUser {
     pub first_name: String,
     pub last_name: String,
@@ -17,7 +19,7 @@ pub struct NewUser {
 }
 
 #[derive(AsChangeset)]
-#[diesel(table_name = crate::schema::users)]
+#[diesel(table_name = schema::users)]
 pub struct UpdateUser {
     pub first_name: Option<String>,
     pub last_name: Option<String>,

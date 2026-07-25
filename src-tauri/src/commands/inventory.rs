@@ -1,4 +1,4 @@
-use db::{
+use crate::db::{
     entities::{NewProductCategory, NewProduct}, repositories::{ProductCategoryRepository, ProductRepository},
 };
 use tauri::Manager;

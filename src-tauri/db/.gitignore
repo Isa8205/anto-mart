@@ -1,5 +1,0 @@
-# Environment variables
-.env
-
-# Dev database
-app.db

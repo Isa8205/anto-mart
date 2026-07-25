@@ -4,6 +4,6 @@ pub mod repositories;
 pub mod entities;
 pub mod types;
 
-mod schema;
-mod util;
+pub mod schema;
+pub mod util;
 

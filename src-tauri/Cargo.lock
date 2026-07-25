@@ -48,8 +48,8 @@ dependencies = [
  "anyhow",
  "argon2",
  "chrono",
- "db",
  "derive_more",
+ "diesel",
  "dirs 5.0.1",
  "escpos",
  "rand_core",
@@ -736,20 +736,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "db"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "chrono",
- "derive_more",
- "diesel",
- "dotenv",
- "serde",
- "thiserror 1.0.69",
- "ts-rs",
-]
-
-[[package]]
 name = "dbus"
 version = "0.9.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -940,12 +926,6 @@ dependencies = [
  "selectors",
  "tendril",
 ]
-
-[[package]]
-name = "dotenv"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "downcast-rs"

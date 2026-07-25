@@ -4,7 +4,7 @@ use crate::{
     }, utils::media::save_file,
 };
 use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
-use db::{
+use crate::db::{
     entities::{NewRole, NewUser},
     repositories::{RoleRepository, UserRepository},
 };

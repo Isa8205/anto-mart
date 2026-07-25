@@ -1,7 +1,9 @@
 use diesel::prelude::*;
 
+use crate::db::schema;
+
 #[derive(Insertable)]
-#[diesel(table_name = crate::schema::purchases)]
+#[diesel(table_name = schema::purchases)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct NewPurchase {
     pub user_id: i32,
@@ -12,7 +14,7 @@ pub struct NewPurchase {
 }
 
 #[derive(Insertable)]
-#[diesel(table_name = crate::schema::purchase_items)]
+#[diesel(table_name = schema::purchase_items)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct NewPurchaseItem {
     pub purchase_id: i32,

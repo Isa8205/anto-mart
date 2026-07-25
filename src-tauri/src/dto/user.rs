@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
-use db::models::User;
 use ts_rs::TS;
+
+use crate::db::models::User;
 
 #[derive(Deserialize, TS)]
 #[ts(export)]

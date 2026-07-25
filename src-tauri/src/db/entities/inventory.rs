@@ -1,12 +1,14 @@
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
+use crate::db::schema;
+
 
 // ==================================
 // Product Category
 // ==================================
 #[derive(Insertable)]
-#[diesel(table_name = crate::schema::product_categories)]
+#[diesel(table_name = schema::product_categories)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct NewProductCategory<'a> {
     pub parent_id: Option<i32>,
@@ -18,7 +20,7 @@ pub struct NewProductCategory<'a> {
 }
 
 #[derive(AsChangeset)]
-#[diesel(table_name = crate::schema::product_categories)]
+#[diesel(table_name = schema::product_categories)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct UpdateProductCategory<'a> {
     pub name: Option<&'a str>,
@@ -32,7 +34,7 @@ pub struct UpdateProductCategory<'a> {
 // Products
 // ==================================
 #[derive(Insertable)]
-#[diesel(table_name = crate::schema::products)]
+#[diesel(table_name = schema::products)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct NewProduct<'a> {
     pub sku: &'a str,
@@ -48,7 +50,7 @@ pub struct NewProduct<'a> {
 }
 
 #[derive(AsChangeset)]
-#[diesel(table_name = crate::schema::products)]
+#[diesel(table_name = schema::products)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct UpdateProduct<'a> {
     pub sku: Option<&'a str>,

@@ -1,8 +1,10 @@
 use diesel::{Selectable, deserialize::Queryable};
 use serde::Serialize;
 
+use crate::db::schema;
+
 #[derive(Queryable, Selectable, Serialize, Debug)]
-#[diesel(table_name = crate::schema::users)]
+#[diesel(table_name = schema::users)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct User {
     pub id: i32,

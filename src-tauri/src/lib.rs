@@ -9,6 +9,7 @@ use crate::commands::{
     inventory::{add_product_category, add_product},
 };
 
+mod db;
 mod utils;
 mod commands;
 mod dto;

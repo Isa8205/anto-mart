@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 
-use crate::models::Product;
-use crate::entities::{NewProduct, UpdateProduct};
-use crate::schema::products;
+use crate::db::models::Product;
+use crate::db::entities::{NewProduct, UpdateProduct};
+use crate::db::schema::products;
 
 pub struct ProductRepository;
 

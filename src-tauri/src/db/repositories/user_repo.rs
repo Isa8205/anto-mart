@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 
-use crate::models::User;
-use crate::entities::{NewUser, UpdateUser};
-use crate::schema::users;
+use crate::db::models::User;
+use crate::db::entities::{NewUser, UpdateUser};
+use crate::db::schema::users;
 
 pub struct UserRepository;
 
@@ -29,7 +29,7 @@ impl UserRepository {
     }
 
     pub fn find_by_email(&mut self, given_email: String, conn: &mut SqliteConnection) -> Result<User, diesel::result::Error> {
-        use crate::schema::users::dsl::email;
+        use crate::db::schema::users::dsl::email;
 
         users::table
             .filter(email.eq(given_email))

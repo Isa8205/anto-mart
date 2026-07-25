@@ -1,21 +1,20 @@
-use diesel::associations::HasTable;
 use diesel::prelude::*;
 
-use crate::{entities::NewPurchase, models::Purchase};
-use crate::schema::purchases::dsl::{purchases};
+use crate::db::{entities::NewPurchase, models::Purchase};
+use crate::db::schema;
 
 pub struct PurchaseRepository;
 
 impl PurchaseRepository {
     pub fn create(&mut self, data: NewPurchase, conn: &mut SqliteConnection) -> Result<Purchase, diesel::result::Error> {
-        diesel::insert_into(purchases)
+        diesel::insert_into(schema::purchases::table)
             .values(&data)
             .returning(Purchase::as_returning())
             .get_result::<Purchase>(conn)
     }
 
     pub fn find_by_id(&mut self, id: i32, conn: &mut SqliteConnection) -> Result<Purchase, diesel::result::Error> {
-        purchases::table()
+        schema::purchases::table
             .find(id)
             .get_result::<Purchase>(conn)
     }

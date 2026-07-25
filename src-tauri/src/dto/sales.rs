@@ -1,4 +1,4 @@
-use db::types::PaymentMethod;
+use crate::db::types::PaymentMethod;
 use serde::Deserialize;
 use ts_rs::TS;
 

@@ -1,11 +1,13 @@
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
+use crate::db::schema;
+
 // ==================================
 // Product Category
 // ==================================
 #[derive(Queryable, Selectable)]
-#[diesel(table_name = crate::schema::product_categories)]
+#[diesel(table_name = schema::product_categories)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct ProductCategory {
     pub id: i32,
@@ -22,7 +24,7 @@ pub struct ProductCategory {
 // Products
 // =================================
 #[derive(Queryable, Selectable)]
-#[diesel(table_name = crate::schema::products)]
+#[diesel(table_name = schema::products)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Product {
     pub id: i32, 

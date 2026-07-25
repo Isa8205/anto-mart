@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 
-use crate::models::Role;
-use crate::entities::{NewRole, UpdateRole};
-use crate::schema::roles;
+use crate::db::models::Role;
+use crate::db::entities::{NewRole, UpdateRole};
+use crate::db::schema::roles;
 
 pub struct RoleRepository;
 

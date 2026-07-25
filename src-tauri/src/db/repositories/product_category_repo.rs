@@ -1,8 +1,8 @@
 use diesel::prelude::*;
 
-use crate::models::ProductCategory;
-use crate::entities::{NewProductCategory, UpdateProductCategory};
-use crate::schema::product_categories;
+use crate::db::models::ProductCategory;
+use crate::db::entities::{NewProductCategory, UpdateProductCategory};
+use crate::db::schema::product_categories;
 
 pub struct ProductCategoryRepository;
 
