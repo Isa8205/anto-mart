@@ -10,6 +10,15 @@ pub struct Response {
     pub error: Option<String>,
 }
 
+impl Response {
+    pub fn new(success: bool, error: Option<String>) -> Response {
+        Response {
+            success,
+            error,
+        }
+    }
+}
+
 #[derive(Serialize, TS)]
 #[ts(export)]
 pub struct LoginResponse {

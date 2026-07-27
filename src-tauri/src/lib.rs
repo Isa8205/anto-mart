@@ -7,6 +7,7 @@ use db::{
 use crate::commands::{
     auth::{add_role, add_user, login},
     inventory::{add_product_category, add_product},
+    business::{setup_business, is_business_setup, get_business_info},
 };
 
 mod db;
@@ -38,6 +39,9 @@ pub async fn run() {
             add_user,
             add_product_category,
             add_product,
+            setup_business,
+            is_business_setup,
+            get_business_info,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

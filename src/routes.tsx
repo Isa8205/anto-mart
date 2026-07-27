@@ -9,6 +9,7 @@ import Expenses from './pages/Expenses'
 import Ledger from './pages/Ledger'
 import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import Onboarding from './pages/Onboarding' // Import the new Onboarding component
 
 const rootRoute = new RootRoute({
   component: App,
@@ -62,6 +63,12 @@ const settingsRoute = new Route({
   component: Settings,
 })
 
+const onboardingRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/onboarding',
+  component: Onboarding,
+})
+
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   salesRoute,
@@ -71,4 +78,5 @@ export const routeTree = rootRoute.addChildren([
   ledgerRoute,
   reportsRoute,
   settingsRoute,
+  onboardingRoute, // Add the onboarding route
 ])
