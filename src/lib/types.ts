@@ -1,6 +1,17 @@
+export interface ProductCategory {
+  id: string
+  name: string
+  image?: string
+}
+
 export interface Product {
   id: string
   name: string
+  description?: string
+  cost_price: number
+  selling_price: number
+  quantity: number
+  category_id: string
   sku: string
   category: string
   price: number
@@ -88,4 +99,22 @@ export interface StoreSettings {
   taxRate: number
   currency: string
   printerType: string
+}
+
+export interface BusinessInfo {
+  storeName: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+  currency: string
+}
+
+export interface OnboardingState {
+  isOnboarded: boolean
+  businessInfo?: BusinessInfo
+  adminCreated?: boolean
 }

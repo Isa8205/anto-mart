@@ -1,4 +1,5 @@
-import { Product, Customer, Supplier, Sale, Expense, LedgerEntry, StoreSettings } from './types'
+import { Product, ProductCategory, Customer, Supplier, Sale, Expense, LedgerEntry, StoreSettings } from './types'
+import type { User } from './auth-types'
 
 export const mockProducts: Product[] = [
   {
@@ -260,12 +261,65 @@ export const mockLedger: LedgerEntry[] = [
 ]
 
 export const mockStoreSettings: StoreSettings = {
-  storeName: 'AntoMart',
-  address: '999 Commerce St',
-  city: 'New York',
-  phone: '555-0001',
+  storeName: 'AntoMart Store',
   email: 'info@antomart.com',
-  taxRate: 8.875,
+  phone: '+1-800-ANT-OMART',
+  address: '123 Commerce Street',
+  city: 'Business City',
+  state: 'BC',
+  zipCode: '12345',
+  country: 'United States',
   currency: 'USD',
-  printerType: 'Thermal (80mm)',
+  taxRate: 8.5,
 }
+
+export const mockUsers: User[] = [
+  {
+    id: 'user-1',
+    username: 'admin',
+    email: 'admin@antomart.com',
+    password: 'admin123',
+    role: 'admin',
+    createdDate: '2024-01-01',
+    isActive: true,
+    lastLogin: '2024-05-28T10:30:00Z',
+  },
+  {
+    id: 'user-2',
+    username: 'cashier1',
+    email: 'cashier1@antomart.com',
+    password: 'cashier123',
+    role: 'cashier',
+    createdDate: '2024-02-15',
+    isActive: true,
+    lastLogin: '2024-05-28T09:15:00Z',
+  },
+  {
+    id: 'user-3',
+    username: 'cashier2',
+    email: 'cashier2@antomart.com',
+    password: 'pass456',
+    role: 'cashier',
+    createdDate: '2024-03-10',
+    isActive: true,
+    lastLogin: '2024-05-27T18:45:00Z',
+  },
+]
+
+export const mockCategories: ProductCategory[] = [
+  {
+    id: 'cat-1',
+    name: 'Electronics',
+    image: '/placeholder.svg?height=200&width=200',
+  },
+  {
+    id: 'cat-2',
+    name: 'Accessories',
+    image: '/placeholder.svg?height=200&width=200',
+  },
+  {
+    id: 'cat-3',
+    name: 'Software',
+    image: '/placeholder.svg?height=200&width=200',
+  },
+]

@@ -1,7 +1,6 @@
 
 import { RootRoute, Route } from '@tanstack/react-router'
 import App from './App'
-import Dashboard from './pages/Dashboard'
 import Sales from './pages/Sales'
 import Inventory from './pages/Inventory'
 import Suppliers from './pages/Suppliers'
@@ -18,7 +17,7 @@ const rootRoute = new RootRoute({
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: Dashboard,
+  component: Sales,
 })
 
 const salesRoute = new Route({
