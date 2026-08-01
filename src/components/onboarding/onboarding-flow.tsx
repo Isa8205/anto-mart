@@ -3,21 +3,37 @@ import { useOnboarding } from '@/lib/onboarding-context'
 import StepWelcome from './step-welcome'
 import StepBusiness from './step-business'
 import StepAdmin from './step-admin'
-import type { BusinessInfo } from '@/lib/types'
-import { toast } from 'sonner'
+import { BusinessInfoRequest } from '@/bindings/BusinessInfoRequest'
+import { OnboardingRequest } from '@/bindings/OnboardingRequest'
+import { UserInfoRequest } from '@/bindings/UserInfoRequest'
 
 export default function OnboardingFlow() {
   const { completeOnboarding } = useOnboarding()
   const [currentStep, setCurrentStep] = useState(1)
-  const [businessInfo, setBusinessInfo] = useState<BusinessInfo | null>(null)
+  const [onboardingRequest, setOnboardingRequest] = useState<OnboardingRequest>({
+    business: {
+      name: "",
+      email: "",
+      phone: "",
+      county: "",
+    },
+    admin: {
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      phone: "",
+      password: "",
+    }
+  });
 
   const handleWelcomeNext = () => {
     setCurrentStep(2)
   }
 
-  const handleBusinessNext = (info: BusinessInfo) => {
-    setBusinessInfo(info)
-    setCurrentStep(3)
+  const handleBusinessNext = (businessInfo: BusinessInfoRequest) => {
+    setOnboardingRequest({...onboardingRequest, business: businessInfo});
+    setCurrentStep(3);
   }
 
   const handleBusinessBack = () => {
@@ -28,39 +44,18 @@ export default function OnboardingFlow() {
     setCurrentStep(2)
   }
 
-  const handleAdminComplete = async (
-    username: string,
-    email: string,
-    password: string
-  ) => {
-    if (!businessInfo) {
-      toast.error('Business information missing')
-      return
-    }
+  const handleAdminComplete = async (adminData: UserInfoRequest) => {
+    setOnboardingRequest({...onboardingRequest, admin: adminData})
 
-    try {
-      await completeOnboarding(businessInfo, username, email, password)
-
-      toast.success('Setup completed successfully!')
-      toast.info(`Welcome ${username}! Please login with your credentials.`)
-
-      // Delay to allow user to see the message
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Trigger a page reload to reset to login screen
-      window.location.reload()
-    } catch (error) {
-      console.error('Error completing onboarding:', error)
-      toast.error('Failed to complete setup. Please try again.')
-    }
+    completeOnboarding(onboardingRequest);
   }
 
   return (
     <>
       {currentStep === 1 && <StepWelcome onNext={handleWelcomeNext} />}
       {currentStep === 2 && <StepBusiness onNext={handleBusinessNext} onBack={handleBusinessBack} />}
-      {currentStep === 3 && businessInfo && (
-        <StepAdmin businessInfo={businessInfo} onComplete={handleAdminComplete} onBack={handleAdminBack} />
+      {currentStep === 3 && (
+        <StepAdmin businessInfo={onboardingRequest.business} onComplete={handleAdminComplete} onBack={handleAdminBack} />
       )}
     </>
   )

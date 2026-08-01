@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -10,24 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { BusinessInfo } from '@/lib/types'
+import { BusinessInfoRequest } from '@/bindings/BusinessInfoRequest'
 
 interface StepBusinessProps {
-  onNext: (businessInfo: BusinessInfo) => void
+  onNext: (businessInfo: BusinessInfoRequest) => void
   onBack: () => void
 }
 
 export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
-  const [formData, setFormData] = useState<BusinessInfo>({
-    storeName: '',
+  const [formData, setFormData] = useState<BusinessInfoRequest>({
+    name: '',
     email: '',
     phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'United States',
-    currency: 'USD',
+    county: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -51,8 +45,8 @@ export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.storeName.trim()) {
-      newErrors.storeName = 'Store name is required'
+    if (!formData.name.trim()) {
+      newErrors.name = 'Store name is required'
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required'
@@ -62,20 +56,11 @@ export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required'
     }
-    if (!formData.address.trim()) {
-      newErrors.address = 'Address is required'
-    }
-    if (!formData.city.trim()) {
-      newErrors.city = 'City is required'
-    }
-    if (!formData.state.trim()) {
-      newErrors.state = 'State is required'
-    }
-    if (!formData.zipCode.trim()) {
-      newErrors.zipCode = 'Zip code is required'
+    if (!formData.county.trim()) {
+      newErrors.county = 'County is required'
     }
 
-    setErrors(newErrors)
+    console.log(newErrors);
     return Object.keys(newErrors).length === 0
   }
 
@@ -109,18 +94,18 @@ export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
           <div className="space-y-6">
             {/* Store Name */}
             <div>
-              <Label htmlFor="storeName" className="text-sm font-medium text-foreground">
+              <Label htmlFor="name" className="text-sm font-medium text-foreground">
                 Store Name
               </Label>
               <Input
-                id="storeName"
-                name="storeName"
-                value={formData.storeName}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g., My Retail Store"
-                className={errors.storeName ? 'border-destructive' : ''}
+                className={errors.name ? 'border-destructive' : ''}
               />
-              {errors.storeName && <p className="text-sm text-destructive mt-1">{errors.storeName}</p>}
+              {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
             </div>
 
             {/* Email */}
@@ -134,7 +119,7 @@ export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="business@example.com"
+                placeholder="business@gmail.com"
                 className={errors.email ? 'border-destructive' : ''}
               />
               {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
@@ -148,115 +133,36 @@ export default function StepBusiness({ onNext, onBack }: StepBusinessProps) {
               <Input
                 id="phone"
                 name="phone"
+                type='number'
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+1 (555) 123-4567"
+                placeholder="0712345678"
                 className={errors.phone ? 'border-destructive' : ''}
               />
               {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
             </div>
 
-            {/* Address */}
-            <div>
-              <Label htmlFor="address" className="text-sm font-medium text-foreground">
-                Address
-              </Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="123 Main Street"
-                className={errors.address ? 'border-destructive' : ''}
-              />
-              {errors.address && <p className="text-sm text-destructive mt-1">{errors.address}</p>}
-            </div>
 
-            {/* City, State, Zip */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="city" className="text-sm font-medium text-foreground">
-                  City
-                </Label>
-                <Input
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  placeholder="New York"
-                  className={errors.city ? 'border-destructive' : ''}
-                />
-                {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="state" className="text-sm font-medium text-foreground">
-                  State
-                </Label>
-                <Input
-                  id="state"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  placeholder="NY"
-                  className={errors.state ? 'border-destructive' : ''}
-                />
-                {errors.state && <p className="text-sm text-destructive mt-1">{errors.state}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="zipCode" className="text-sm font-medium text-foreground">
-                  Zip Code
-                </Label>
-                <Input
-                  id="zipCode"
-                  name="zipCode"
-                  value={formData.zipCode}
-                  onChange={handleChange}
-                  placeholder="10001"
-                  className={errors.zipCode ? 'border-destructive' : ''}
-                />
-                {errors.zipCode && <p className="text-sm text-destructive mt-1">{errors.zipCode}</p>}
-              </div>
-            </div>
 
             {/* Country */}
             <div>
-              <Label htmlFor="country" className="text-sm font-medium text-foreground">
-                Country
+              <Label htmlFor="county" className="text-sm font-medium text-foreground">
+                County
               </Label>
-              <Select value={formData.country} onValueChange={(value) => handleSelectChange('country', value)}>
-                <SelectTrigger>
+              <Select value={formData.county} onValueChange={(value) => handleSelectChange('county', value)}>
+                <SelectTrigger className='w-full max-w-48'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="United States">United States</SelectItem>
-                  <SelectItem value="Canada">Canada</SelectItem>
-                  <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                  <SelectItem value="Australia">Australia</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  <SelectItem value="Nairobi">Nairobi</SelectItem>
+                  <SelectItem value="Nyeri">Nyeri</SelectItem>
+                  <SelectItem value="Kericho">Kericho</SelectItem>
+                  <SelectItem value="Kisumu">Kisumu</SelectItem>
+                  <SelectItem value="Nakuru">Nakuru</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Currency */}
-            <div>
-              <Label htmlFor="currency" className="text-sm font-medium text-foreground">
-                Currency
-              </Label>
-              <Select value={formData.currency} onValueChange={(value) => handleSelectChange('currency', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD - US Dollar</SelectItem>
-                  <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
-                  <SelectItem value="GBP">GBP - British Pound</SelectItem>
-                  <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
-                  <SelectItem value="EUR">EUR - Euro</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
         </div>
 

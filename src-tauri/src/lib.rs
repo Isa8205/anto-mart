@@ -1,26 +1,27 @@
+use db::database::Database;
 use std::sync::Mutex;
 use tauri::{self, Manager};
-use db::{
-    database::Database,
-};
 
 use crate::commands::{
     auth::{add_role, add_user, login},
-    inventory::{add_product_category, add_product},
-    business::{setup_business, is_business_setup, get_business_info},
+    inventory::{add_product, add_product_category},
+    onboarding::{complete_onboarding, is_onboarding_done},
 };
 
-mod db;
-mod utils;
 mod commands;
+mod db;
 mod dto;
+mod utils;
 
 pub struct DbState(Mutex<Database>);
 
 pub async fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let app_dir = app.path().app_data_dir().expect("Failed to get the app data dir!");
+            let app_dir = app
+                .path()
+                .app_data_dir()
+                .expect("Failed to get the app data dir!");
 
             std::fs::create_dir_all(&app_dir)?;
 
@@ -39,9 +40,8 @@ pub async fn run() {
             add_user,
             add_product_category,
             add_product,
-            setup_business,
-            is_business_setup,
-            get_business_info,
+            is_onboarding_done,
+            complete_onboarding,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

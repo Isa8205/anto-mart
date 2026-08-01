@@ -1,25 +1,27 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import type { BusinessInfo } from '@/lib/types'
+import { Eye, EyeOff } from 'lucide-react'
+import { UserInfoRequest } from '@/bindings/UserInfoRequest'
+import { BusinessInfoRequest } from '@/bindings/BusinessInfoRequest'
 
 interface StepAdminProps {
-  businessInfo: BusinessInfo
-  onComplete: (username: string, email: string, password: string) => Promise<void>
+  businessInfo: BusinessInfoRequest
+  onComplete: (adminData: UserInfoRequest) => void
   onBack: () => void
 }
 
 export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdminProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
     username: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   })
@@ -38,6 +40,14 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required'
+    }
+
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required'
+    }
+    
     if (!formData.username.trim()) {
       newErrors.username = 'Username is required'
     } else if (formData.username.length < 3) {
@@ -48,6 +58,10 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
       newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Valid email is required'
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required"
     }
 
     if (!formData.password) {
@@ -63,20 +77,20 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
     }
 
     setErrors(newErrors)
+    console.log(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleComplete = async () => {
+  const handleComplete = () => {
     if (validateForm()) {
-      setIsLoading(true)
-      try {
-        await onComplete(formData.username, formData.email, formData.password)
-      } catch (error) {
-        console.error('Error completing onboarding:', error)
-        setErrors({ submit: 'Failed to complete setup. Please try again.' })
-      } finally {
-        setIsLoading(false)
-      }
+      onComplete({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      })
     }
   }
 
@@ -102,10 +116,10 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
         {/* Summary */}
         <div className="bg-muted/50 rounded-lg p-4 mb-8">
           <p className="text-sm text-foreground">
-            <span className="text-muted-foreground">Store:</span> {businessInfo.storeName}
+            <span className="text-muted-foreground">Store:</span> {businessInfo.name}
           </p>
           <p className="text-sm text-foreground">
-            <span className="text-muted-foreground">Location:</span> {businessInfo.city}, {businessInfo.state}
+            <span className="text-muted-foreground">Location:</span> {businessInfo.county}
           </p>
         </div>
 
@@ -119,10 +133,45 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
           )}
 
           <div className="space-y-6">
+            {/* Full Name */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Last Name */}
+              <div>
+                <Label htmlFor="first_name" className="text-sm font-medium text-foreground">
+                  First Name
+                </Label>
+                <Input
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  placeholder="John"
+                  className={errors.first_name ? 'border-destructive' : ''}
+                />
+                {errors.first_name && <p className="text-sm text-destructive mt-1">{errors.first_name}</p>}
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <Label htmlFor="last_name" className="text-sm font-medium text-foreground">
+                  Last Name
+                </Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  placeholder="Doe"
+                  className={errors.first_name ? 'border-destructive' : ''}
+                />
+                {errors.last_name && <p className="text-sm text-destructive mt-1">{errors.last_name}</p>}
+              </div>
+            </div>
+
             {/* Username */}
             <div>
               <Label htmlFor="username" className="text-sm font-medium text-foreground">
-                Administrator Username
+                Username
               </Label>
               <Input
                 id="username"
@@ -139,7 +188,7 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
             {/* Email */}
             <div>
               <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                Administrator Email
+                Email
               </Label>
               <Input
                 id="email"
@@ -151,6 +200,23 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
                 className={errors.email ? 'border-destructive' : ''}
               />
               {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <Label htmlFor="phone" className="text-sm font-medium text-foreground">
+                phone
+              </Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="number"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="0712345678"
+                className={errors.phone ? 'border-destructive' : ''}
+              />
+              {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
             </div>
 
             {/* Password */}
@@ -210,15 +276,15 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
 
         {/* Actions */}
         <div className="flex justify-between gap-4 mt-12">
-          <Button onClick={onBack} variant="outline" className="px-8 py-2" disabled={isLoading}>
+          <Button onClick={onBack} variant="outline" className="px-8 py-2">
             Back
           </Button>
           <Button
             onClick={handleComplete}
-            disabled={isLoading}
+            // disabled={isLoading}
             className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-2 inline-flex items-center gap-2"
           >
-            {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+            {/* {isLoading && <Loader2 className="w-4 h-4 animate-spin" />} */}
             Complete Setup
           </Button>
         </div>

@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState } from 'react'
 import type { BusinessInfo, OnboardingState } from './types'
+import { OnboardingRequest } from '@/bindings/OnboardingRequest'
+import { invoke } from "@tauri-apps/api/core"
+import { Response } from '@/bindings/Response'
 
 interface OnboardingContextType {
   isOnboarded: boolean
   businessInfo: BusinessInfo | null
-  completeOnboarding: (businessInfo: BusinessInfo, adminUsername: string, adminEmail: string, adminPassword: string) => Promise<void>
+  completeOnboarding: (onboardinData: OnboardingRequest) => Promise<void>
   getOnboardingState: () => OnboardingState
 }
 
@@ -21,35 +24,10 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     return stored ? JSON.parse(stored) : null
   })
 
-  const completeOnboarding = async (
-    businessInfo: BusinessInfo,
-    adminUsername: string,
-    adminEmail: string,
-    adminPassword: string
-  ) => {
-    // Store business info
-    localStorage.setItem('businessInfo', JSON.stringify(businessInfo))
-    setBusinessInfo(businessInfo)
-
-    // Create initial admin user
-    const adminUser = {
-      id: 'user-1',
-      username: adminUsername,
-      email: adminEmail,
-      password: adminPassword,
-      role: 'admin' as const,
-      createdDate: new Date().toISOString().split('T')[0],
-      isActive: true,
-      lastLogin: null,
-    }
-
-    // Store admin user in localStorage
-    const users = [adminUser]
-    localStorage.setItem('users', JSON.stringify(users))
-
-    // Mark as onboarded
-    localStorage.setItem('onboarded', 'true')
-    setIsOnboarded(true)
+  const completeOnboarding = async (onboardinData: OnboardingRequest) => {
+    const res = await invoke("complete_onboarding", { data: onboardinData });
+    console.log(res);
+    // setIsOnboarded(true)
   }
 
   const getOnboardingState = (): OnboardingState => ({

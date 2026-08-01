@@ -1,6 +1,14 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    app_metadata (key) {
+        key -> Text,
+        value -> Text,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     permissions (id) {
         id -> Integer,
         perm_name -> Text,
@@ -120,6 +128,7 @@ diesel::joinable!(role_permissions -> roles (role_id));
 diesel::joinable!(users -> roles (role));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    app_metadata,
     permissions,
     product_categories,
     product_images,

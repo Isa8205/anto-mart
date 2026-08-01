@@ -1,15 +1,6 @@
-use crate::dto::{BusinessResponse, CreateBusinessRequest, Response};
+use crate::{commands::utils::get_business_config_path, dto::{BusinessResponse, Response}};
 use std::fs;
-use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
-
-fn get_business_config_path(app: &AppHandle) -> PathBuf {
-    let config_dir = app.path().app_data_dir().unwrap();
-    if !config_dir.exists() {
-        fs::create_dir_all(&config_dir).unwrap();
-    }
-    config_dir.join(".business.json")
-}
+use tauri::AppHandle;
 
 #[tauri::command]
 pub fn setup_business(data: CreateBusinessRequest, app: AppHandle) -> Response {
