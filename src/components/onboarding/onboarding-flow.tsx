@@ -44,8 +44,8 @@ export default function OnboardingFlow() {
     setCurrentStep(2)
   }
 
-  const handleAdminComplete = async (adminData: UserInfoRequest) => {
-    setOnboardingRequest({...onboardingRequest, admin: adminData})
+  const handleAdminComplete = (adminData: UserInfoRequest) => {
+    setOnboardingRequest({...onboardingRequest, admin: adminData});
 
     completeOnboarding(onboardingRequest);
   }

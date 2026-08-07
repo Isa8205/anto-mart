@@ -4,7 +4,7 @@ use serde::Deserialize;
 use crate::db::schema;
 
 
-#[derive(Insertable, Deserialize)]
+#[derive(Debug, Insertable, Deserialize)]
 #[diesel(table_name = schema::users)]
 pub struct NewUser {
     pub first_name: String,

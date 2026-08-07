@@ -1,6 +1,8 @@
 use std::fs;
 
+use argon2::{Argon2, PasswordHasher, password_hash::SaltString};
 use diesel::prelude::*;
+use rand_core::OsRng;
 use tauri::{AppHandle, Manager};
 
 use crate::{
@@ -9,63 +11,90 @@ use crate::{
     db::{
         entities::{NewRole, NewUser},
         repositories::{RoleRepository, UserRepository},
-        schema::app_metadata::{key, value},
     },
-    dto::{OnboardingRequest, Response},
+    dto::OnboardingRequest,
 };
 
 #[tauri::command]
-pub fn complete_onboarding(data: OnboardingRequest, app: AppHandle) -> Response {
+pub fn complete_onboarding(data: OnboardingRequest, app: AppHandle) -> Result<(), String> {
+    let admin = &data.admin;
+    if admin.first_name.trim().is_empty()
+        || admin.last_name.trim().is_empty()
+        || admin.email.trim().is_empty()
+        || admin.password.trim().is_empty()
+    {
+        return Err("Required fields (first_name, last_name, email, phone, password) cannot be empty".into());
+    }
+
+    // Save the business info into a json file
+    let business_conf_path = get_business_config_path(&app);
+
+    let json_data = serde_json::to_string_pretty(&data.business).unwrap();
+    fs::write(business_conf_path, json_data)
+        .map_err(|e| format!("Failed to save write business config: {}", e.to_string()))?;
+
+    // Generate the hash before the db handle to reduce db lock time
+    let raw_pass = data.admin.password.clone();
+    let salt = SaltString::generate(&mut OsRng);
+    let hashed_password = Argon2::default()
+        .hash_password(raw_pass.as_bytes(), &salt)
+        .unwrap()
+        .to_string();
+
     let db_handle = app.state::<DbState>();
     let mut db_guard = db_handle.0.lock().unwrap();
     let conn = &mut db_guard.conn;
 
-    let business_conf_path = get_business_config_path(&app);
+    conn.transaction::<(), diesel::result::Error, _>(|conn| {
+        // Create the Admin and Cashier roles
+        let mut role_repo = RoleRepository;
 
-    // Save the business info into a json file
-    let json_data = serde_json::to_string_pretty(&data.business).unwrap();
-    fs::write(business_conf_path, json_data);
+        let admin_role = NewRole {
+            role_name: "Admin".into(),
+        };
 
-    // Create the Admin and Cashier roles
-    let mut role_repo = RoleRepository;
+        let cashier_role = NewRole {
+            role_name: "Cashier".into(),
+        };
 
-    let admin_role = NewRole {
-        role_name: "Admin".into(),
-    };
+        let created_admin_role = role_repo.create(admin_role, conn).unwrap();
+        let _created_cashier_role = role_repo.create(cashier_role, conn).unwrap();
 
-    let cashier_role = NewRole {
-        role_name: "Cashier".into(),
-    };
+        // Register the admin user to the database
+        let mut user_repo = UserRepository;
 
-    let created_admin_role = role_repo.create(admin_role, conn).unwrap();
-    let _created_cashier_role = role_repo.create(cashier_role, conn).unwrap();
+        let phone_option = if !admin.phone.trim().is_empty() {
+            Some(admin.phone.trim().to_string())
+        } else {
+            None
+        };
 
-    // Register the admin user to the database
-    let mut user_repo = UserRepository;
+        let new_admin = NewUser {
+            first_name: admin.first_name.trim().to_string(),
+            last_name: admin.last_name.trim().to_string(),
+            email: admin.email.trim().to_string(),
+            phone: phone_option,
+            password: hashed_password,
+            role: Some(created_admin_role.id),
+            avatar: None,
+            mfa_enabled: false,
+            mfa_method: None,
+        };
 
-    let new_admin = NewUser {
-        first_name: data.admin.first_name,
-        last_name: data.admin.last_name,
-        email: data.admin.email,
-        phone: Some(data.admin.phone),
-        password: data.admin.password,
-        role: Some(1),
-        avatar: None,
-        mfa_enabled: false,
-        mfa_method: None,
-    };
+        user_repo.create(new_admin, conn)?;
 
-    user_repo.create(new_admin, conn);
+        // Set the 'onboarding_complete' metadata
+        use crate::db::schema::app_metadata::dsl::*;
 
-    // Set the 'onboarding_complete' metadata
-    let _ = diesel::insert_into(crate::db::schema::app_metadata::table)
-        .values((key.eq("onboarding_complete"), value.eq("true")))
-        .execute(conn);
+        diesel::insert_into(crate::db::schema::app_metadata::table)
+            .values((key.eq("onboarding_complete"), value.eq("true")))
+            .execute(conn)?;
 
-    Response {
-        success: true,
-        error: None,
-    }
+        Ok(())
+    })
+    .map_err(|e| format!("Onboarding transaction failed: {}", e))?;
+
+    Ok(())
 }
 
 #[tauri::command]

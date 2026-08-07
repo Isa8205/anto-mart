@@ -77,7 +77,6 @@ export default function StepAdmin({ businessInfo, onComplete, onBack }: StepAdmi
     }
 
     setErrors(newErrors)
-    console.log(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
